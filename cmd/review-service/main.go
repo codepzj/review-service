@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"review-service/internal/conf"
+	"review-service/pkg/snowflake"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
@@ -79,6 +80,11 @@ func main() {
 		panic(err)
 	}
 	defer cleanup()
+
+	// 初始化雪花算法节点
+	if err := snowflake.NewSnowFlake(bc.Snowflake); err != nil {
+		panic(err)
+	}
 
 	// start and wait for stop signal
 	if err := app.Run(); err != nil {

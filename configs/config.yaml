@@ -12,5 +12,7 @@ data:
   redis:
     addr: 127.0.0.1:16379
     password: "123456"
-    read_timeout: 0.2s
-    write_timeout: 0.2s
+
+snowflake:
+  start_time: 2025-10-24
+  machine_id: 1

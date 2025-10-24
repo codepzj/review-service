@@ -6,7 +6,7 @@ info:
     title: Review API
     version: 0.0.1
 paths:
-    /v1/reviews:
+    /review-service/v1/create:
         post:
             tags:
                 - Review
@@ -40,16 +40,17 @@ components:
                     type: string
                 content:
                     type: string
-                hasMedia:
-                    type: integer
-                    format: int32
+                picInfo:
+                    type: string
+                videoInfo:
+                    type: string
                 score:
                     type: integer
                     format: int32
                 serviceScore:
                     type: integer
                     format: int32
-                exporessScore:
+                expressScore:
                     type: integer
                     format: int32
                 anonymous:

@@ -23,11 +23,12 @@ func (s *ReviewService) CreateReview(ctx context.Context, req *pb.CreateReviewRe
 	review, err := s.uc.SaveReview(ctx, &model.ReviewInfo{
 		UserID:       req.UserId,
 		OrderID:      req.OrderId,
-		HasMedia:     req.HasMedia,
+		PicInfo:      req.PicInfo,
+		VideoInfo:    req.VideoInfo,
 		Content:      req.Content,
 		Score:        req.Score,
 		ServiceScore: req.ServiceScore,
-		ExpressScore: req.ExporessScore,
+		ExpressScore: req.ExpressScore,
 		Anonymous:    req.Anonymous,
 		Status:       0,
 	})

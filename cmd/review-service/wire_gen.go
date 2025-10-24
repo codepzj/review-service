@@ -24,14 +24,8 @@ import (
 
 // wireApp init kratos application.
 func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	db, err := data.NewDB(confData)
-	if err != nil {
-		return nil, nil, err
-	}
-	client, err := data.NewRedis(confData)
-	if err != nil {
-		return nil, nil, err
-	}
+	db := data.NewDB(confData)
+	client := data.NewRedis(confData)
 	dataData, cleanup, err := data.NewData(confData, logger, db, client)
 	if err != nil {
 		return nil, nil, err
