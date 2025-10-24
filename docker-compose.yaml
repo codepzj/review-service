@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: review-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      TZ: Asia/Shanghai
+    ports:
+      - 13306:3306
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./review.sql:/docker-entrypoint-initdb.d/review.sql
+
+  redis:
+    image: redis:7.0
+    container_name: review-redis
+    ports:
+      - "16379:6379"
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    volumes:
+      - ./data/redis:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    restart: always
