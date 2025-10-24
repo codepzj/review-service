@@ -24,6 +24,24 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.review.v1.CreateReviewReply'
+    /review-service/v1/reply:
+        post:
+            tags:
+                - Review
+            operationId: Review_ReplyReview
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.review.v1.ReviewReplyRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.review.v1.ReviewReplyResponse'
 components:
     schemas:
         api.review.v1.CreateReviewReply:
@@ -37,6 +55,8 @@ components:
                 userId:
                     type: string
                 orderId:
+                    type: string
+                storeId:
                     type: string
                 content:
                     type: string
@@ -56,5 +76,23 @@ components:
                 anonymous:
                     type: integer
                     format: int32
+        api.review.v1.ReviewReplyRequest:
+            type: object
+            properties:
+                reviewId:
+                    type: string
+                storeId:
+                    type: string
+                content:
+                    type: string
+                picInfo:
+                    type: string
+                videoInfo:
+                    type: string
+        api.review.v1.ReviewReplyResponse:
+            type: object
+            properties:
+                replyId:
+                    type: string
 tags:
     - name: Review

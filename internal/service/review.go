@@ -19,10 +19,12 @@ func NewReviewService(uc *biz.ReviewUsecase) *ReviewService {
 	}
 }
 
+// 创建回复
 func (s *ReviewService) CreateReview(ctx context.Context, req *pb.CreateReviewRequest) (*pb.CreateReviewReply, error) {
-	review, err := s.uc.SaveReview(ctx, &model.ReviewInfo{
+	reviewID, err := s.uc.SaveReview(ctx, &model.ReviewInfo{
 		UserID:       req.UserId,
 		OrderID:      req.OrderId,
+		StoreID:      req.StoreId,
 		PicInfo:      req.PicInfo,
 		VideoInfo:    req.VideoInfo,
 		Content:      req.Content,
@@ -35,17 +37,20 @@ func (s *ReviewService) CreateReview(ctx context.Context, req *pb.CreateReviewRe
 	if err != nil {
 		return nil, err
 	}
-	return &pb.CreateReviewReply{ReviewId: review.ReviewID}, nil
+	return &pb.CreateReviewReply{ReviewId: reviewID}, nil
 }
-func (s *ReviewService) UpdateReview(ctx context.Context, req *pb.UpdateReviewRequest) (*pb.UpdateReviewReply, error) {
-	return &pb.UpdateReviewReply{}, nil
-}
-func (s *ReviewService) DeleteReview(ctx context.Context, req *pb.DeleteReviewRequest) (*pb.DeleteReviewReply, error) {
-	return &pb.DeleteReviewReply{}, nil
-}
-func (s *ReviewService) GetReview(ctx context.Context, req *pb.GetReviewRequest) (*pb.GetReviewReply, error) {
-	return &pb.GetReviewReply{}, nil
-}
-func (s *ReviewService) ListReview(ctx context.Context, req *pb.ListReviewRequest) (*pb.ListReviewReply, error) {
-	return &pb.ListReviewReply{}, nil
+
+// 商家评论回复
+func (s *ReviewService) ReplyReview(ctx context.Context, req *pb.ReviewReplyRequest) (*pb.ReviewReplyResponse, error) {
+	replyID, err := s.uc.ReplyReview(ctx, &biz.ReviewReply{
+		ReviewID:  req.ReviewId,
+		StoreID:   req.StoreId,
+		PicInfo:   req.PicInfo,
+		VideoInfo: req.VideoInfo,
+		Content:   req.Content,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ReviewReplyResponse{ReplyId: replyID}, nil
 }
