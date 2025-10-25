@@ -45,11 +45,12 @@ func (uc *ReviewUsecase) SaveReview(ctx context.Context, r *model.ReviewInfo) (i
 	//	1. 业务校验，同一个订单只能创建一次评论
 	review, err := uc.repo.GetReviewByOrderID(ctx, r.OrderID)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		v1.ErrorGormBadErr("订单id:%d查询失败", r.OrderID)
-		return 0, v1.ErrorGormBadErr("订单id:%d查询失败", r.OrderID)
+		uc.log.WithContext(ctx).Warn("订单id:%d查询失败", r.OrderID)
+		return 0, v1.ErrorGormBadErr("订单查询失败")
 	}
 	if review != nil {
-		return 0, v1.ErrorReviewRepeatedErr("订单id:%d已存在评论，不能重复创建", r.OrderID)
+		uc.log.WithContext(ctx).Warn("订单id:%d已存在评论，不能重复创建", r.OrderID)
+		return 0, v1.ErrorReviewRepeatedErr("订单已存在评论")
 	}
 
 	// 2. reviewID根据雪花算法生成分布式唯一ID
