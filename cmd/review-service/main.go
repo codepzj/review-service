@@ -7,6 +7,7 @@ import (
 	"review-service/internal/conf"
 	"review-service/pkg/snowflake"
 
+	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
@@ -27,14 +28,18 @@ var (
 	// flagconf is the config flag.
 	flagconf string
 
-	id, _ = os.Hostname()
+	id string
 )
 
 func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
+func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server, reg *consul.Registry, node *conf.Node) *kratos.App {
+	Name = node.Name
+	Version = node.Version
+	id = node.Id
+	
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -45,6 +50,8 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 			gs,
 			hs,
 		),
+		// 注册中心
+		kratos.Registrar(reg),
 	)
 }
 
@@ -75,7 +82,7 @@ func main() {
 		panic(err)
 	}
 
-	app, cleanup, err := wireApp(bc.Server, bc.Data, logger)
+	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Registry, bc.Node, logger)
 	if err != nil {
 		panic(err)
 	}

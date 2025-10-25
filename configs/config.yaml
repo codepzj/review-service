@@ -16,3 +16,12 @@ data:
 snowflake:
   start_time: 2025-10-24
   machine_id: 1
+
+registry:
+    addr: 127.0.0.1:8500
+    scheme: http
+
+node:
+  id: pzj-review-service
+  name: review-service
+  version: v0.1

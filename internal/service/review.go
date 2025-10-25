@@ -20,7 +20,7 @@ func NewReviewService(uc *biz.ReviewUsecase) *ReviewService {
 }
 
 // 创建回复
-func (s *ReviewService) CreateReview(ctx context.Context, req *pb.CreateReviewRequest) (*pb.CreateReviewReply, error) {
+func (s *ReviewService) CreateReview(ctx context.Context, req *pb.CreateReviewRequest) (*pb.CreateReviewResponse, error) {
 	reviewID, err := s.uc.SaveReview(ctx, &model.ReviewInfo{
 		UserID:       req.UserId,
 		OrderID:      req.OrderId,
@@ -37,7 +37,7 @@ func (s *ReviewService) CreateReview(ctx context.Context, req *pb.CreateReviewRe
 	if err != nil {
 		return nil, err
 	}
-	return &pb.CreateReviewReply{ReviewId: reviewID}, nil
+	return &pb.CreateReviewResponse{ReviewId: reviewID}, nil
 }
 
 // 商家评论回复

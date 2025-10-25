@@ -8,6 +8,8 @@ message Bootstrap {
   Server server = 1;
   Data data = 2;
   SnowFlake snowflake = 3;
+  Registry registry = 4;
+  Node node = 5;
 }
 
 message Server {
@@ -42,4 +44,15 @@ message Data {
 message SnowFlake {
   string start_time = 1;
   int64 machine_id = 2;
+}
+
+message Registry {
+  string addr = 1;
+  string scheme = 2;
+}
+
+message Node {
+  string id = 1;
+  string name = 2;
+  string version = 3;
 }
