@@ -35,11 +35,13 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server, reg *consul.Registry, node *conf.Node) *kratos.App {
-	Name = node.Name
-	Version = node.Version
-	id = node.Id
-	
+func Init(name string, version string, machine_id string){
+	Name = name
+	Version = version
+	id = machine_id
+}
+
+func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server, reg *consul.Registry, node *conf.Node) *kratos.App {	
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -57,15 +59,7 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server, reg *consul.Reg
 
 func main() {
 	flag.Parse()
-	logger := log.With(log.NewStdLogger(os.Stdout),
-		"ts", log.DefaultTimestamp,
-		"caller", log.DefaultCaller,
-		"service.id", id,
-		"service.name", Name,
-		"service.version", Version,
-		"trace.id", tracing.TraceID(),
-		"span.id", tracing.SpanID(),
-	)
+	
 	c := config.New(
 		config.WithSource(
 			file.NewSource(flagconf),
@@ -81,6 +75,19 @@ func main() {
 	if err := c.Scan(&bc); err != nil {
 		panic(err)
 	}
+
+	// 初始化服务名称、版本、机器ID
+	Init(bc.Node.Name, bc.Node.Version, bc.Node.Id)
+
+	logger := log.With(log.NewStdLogger(os.Stdout),
+		"ts", log.DefaultTimestamp,
+		"caller", log.DefaultCaller,
+		"service.id", id,
+		"service.name", Name,
+		"service.version", Version,
+		"trace.id", tracing.TraceID(),
+		"span.id", tracing.SpanID(),
+	)
 
 	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Registry, bc.Node, logger)
 	if err != nil {
