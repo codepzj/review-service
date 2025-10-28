@@ -25,3 +25,7 @@ node:
   id: pzj-review-service
   name: review-service
   version: v0.1
+
+elasticsearch:
+  addresses:
+    - http://103.36.220.100:9200

@@ -54,3 +54,26 @@ func (s *ReviewService) ReplyReview(ctx context.Context, req *pb.ReviewReplyRequ
 	}
 	return &pb.ReviewReplyResponse{ReplyId: replyID}, nil
 }
+
+// 根据店铺ID获取评论列表
+func (s *ReviewService) GetReviewListByStoreID(ctx context.Context, req *pb.GetReviewListByStoreIDRequest) (*pb.GetReviewListByStoreIDResponse, error) {
+	reviews, err := s.uc.GetReviewListByStoreID(ctx, req.StoreId, req.Page, req.Size)
+	if err != nil {
+		return nil, err
+	}
+	pbReviews := make([]*pb.ReviewInfo, len(reviews))
+	for i, review := range reviews {
+		pbReviews[i] = &pb.ReviewInfo{
+			ReviewId:     review.ReviewID,
+			UserId:       review.UserID,
+			Content:      review.Content,
+			PicInfo:      review.PicInfo,
+			VideoInfo:    review.VideoInfo,
+			Score:        review.Score,
+			ServiceScore: review.ServiceScore,
+			ExpressScore: review.ExpressScore,
+			Anonymous:    review.Anonymous,
+		}
+	}
+	return &pb.GetReviewListByStoreIDResponse{List: pbReviews}, nil
+}

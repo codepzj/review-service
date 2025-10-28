@@ -36,6 +36,3 @@ bin/
 .vscode/
 .idea/
 *.swp
-
-# docker数据目录
-data/

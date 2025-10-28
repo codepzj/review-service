@@ -27,6 +27,8 @@ type ReviewRepo interface {
 	GetReviewByOrderID(context.Context, int64) (*model.ReviewInfo, error)
 	ReplyReview(context.Context, *ReviewReply) (int64, error) // B端
 	GetReviewByReviewID(context.Context, int64) (*model.ReviewInfo, error)
+	GetReviewListByStoreID(context.Context, int64, int32, int32) ([]*ReviewInfo, error)
+	GetSingleflightReviewListByStoreID(context.Context, int64, int32, int32) ([]*ReviewInfo, error)
 }
 
 // ReviewUsecase is a Review usecase.
@@ -91,4 +93,18 @@ func (uc *ReviewUsecase) ReplyReview(ctx context.Context, reply *ReviewReply) (i
 	// 3. 回复入库
 	reply.ReplyID = snowflake.GenID()
 	return uc.repo.ReplyReview(ctx, reply)
+}
+
+// 根据店铺ID获取评论列表
+func (uc *ReviewUsecase) GetReviewListByStoreID(ctx context.Context, storeID int64, page int32, size int32) ([]*ReviewInfo, error) {
+	// 业务逻辑校验
+	if page <= 0 {
+		page = 1
+	}
+	if size <= 0 {
+		size = 10
+	}
+	offset := (page - 1) * size
+	// return uc.repo.GetReviewListByStoreID(ctx, storeID, offset, size)
+	return uc.repo.GetSingleflightReviewListByStoreID(ctx, storeID, offset, size)
 }

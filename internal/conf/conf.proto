@@ -10,6 +10,7 @@ message Bootstrap {
   SnowFlake snowflake = 3;
   Registry registry = 4;
   Node node = 5;
+  Elasticsearch elasticsearch = 6;
 }
 
 message Server {
@@ -55,4 +56,8 @@ message Node {
   string id = 1;
   string name = 2;
   string version = 3;
+}
+
+message Elasticsearch {
+  repeated string addresses = 1;
 }
