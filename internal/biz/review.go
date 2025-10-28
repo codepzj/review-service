@@ -45,11 +45,11 @@ func (uc *ReviewUsecase) SaveReview(ctx context.Context, r *model.ReviewInfo) (i
 	//	1. 业务校验，同一个订单只能创建一次评论
 	review, err := uc.repo.GetReviewByOrderID(ctx, r.OrderID)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		uc.log.WithContext(ctx).Warn("订单id:%d查询失败", r.OrderID)
+		uc.log.WithContext(ctx).Warnf("订单id:%d查询失败", r.OrderID)
 		return 0, v1.ErrorGormBadErr("订单查询失败")
 	}
 	if review != nil {
-		uc.log.WithContext(ctx).Warn("订单id:%d已存在评论，不能重复创建", r.OrderID)
+		uc.log.WithContext(ctx).Warnf("订单id:%d已存在评论，不能重复创建", r.OrderID)
 		return 0, v1.ErrorReviewRepeatedErr("订单已存在评论")
 	}
 
@@ -74,7 +74,7 @@ func (uc *ReviewUsecase) ReplyReview(ctx context.Context, reply *ReviewReply) (i
 	}
 
 	if review == nil {
-		uc.log.Errorf("评论id:%d不存在，无法回复", reply.ReviewID)
+		uc.log.Warnf("评论id:%d不存在，无法回复", reply.ReviewID)
 		return 0, v1.ErrorGormBadErr("评论不存在，无法回复")
 	}
 
@@ -84,7 +84,7 @@ func (uc *ReviewUsecase) ReplyReview(ctx context.Context, reply *ReviewReply) (i
 
 	// 2. 不能水平越权【A商家不能回复B商家下用户的评论】
 	if review.StoreID != reply.StoreID {
-		uc.log.Errorf("商家id:%d无权限回复评论id:%d", reply.StoreID, reply.ReviewID)
+		uc.log.Warnf("商家id:%d无权限回复评论id:%d", reply.StoreID, reply.ReviewID)
 		return 0, v1.ErrorReviewUnauthorizedAccess("水平越权")
 	}
 
